@@ -1,0 +1,6 @@
+#!/bin/sh
+
+find -L data/ \
+	-name '*.RDS' \
+| sed -r -e 's#data/#results/#g' \
+	-e 's#\.RDS#.RData#g'
