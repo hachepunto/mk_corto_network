@@ -5,8 +5,8 @@ results/%.RData:	data/%.RDS
 	mkdir -p results
 	/labs/genut/bin/Rscript ./bin/corto.R \
 		--RDS $prereq \
-		--transpose TRUE\
-		--TFs $TFLIST\
+		--transpose TRUE \
+		--TFs $TFLIST \
 		--nbootstraps $BOOTSTRAPS \
 		--pvalue $PVALUE \
 		--nthreads $NTHREADS \

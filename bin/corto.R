@@ -5,21 +5,21 @@ library(argparse)
 
 
 parser <- ArgumentParser(description="Generate correlation-based DPI networks using corto")
-parser$add_argument("--RDS", required=TRUE, help="RDS object containing expression matrix[genes,cells]")
-parser$add_argument("--transpose", default=FALSE, help="if matrix[cells,genes], the transpose to matrix[genes,cells]")
-parser$add_argument("--TFs", default="", type = "character", help="list of transcription factors")
-parser$add_argument("--nbootstraps", default=100, help="Number of bootstraps to be performed. Default is 100")
-parser$add_argument("--pvalue", default=1e-30, help="The p-value threshold for correlation significance (default 1e-30)")
-parser$add_argument("--nthreads", default=1, help="number of threads to use for bootstrapping. Default is 1")
-parser$add_argument("--sif", default=FALSE, help="Save network in SIF format")
-parser$add_argument("--output", default="./", help="name of the Rdata output folder")
+parser$add_argument("--RDS", required=TRUE, type = "character", help="RDS object containing expression matrix[genes,cells]")
+parser$add_argument("--transpose", default=FALSE, type = "logical", help="if matrix[cells,genes], then transpose to matrix[genes,cells]")
+parser$add_argument("--TFs", default="", type = "character", help="list of transcription factors. If not specified, all interactions will be calculated!")
+parser$add_argument("--nbootstraps", default=100, type = "integer", help="Number of bootstraps to be performed. Default is 100")
+parser$add_argument("--pvalue", default=1e-30, type = "character", help="The p-value threshold for correlation significance (default 1e-30)")
+parser$add_argument("--nthreads", default=1, type = "integer", help="number of threads to use for bootstrapping. Default is 1")
+parser$add_argument("--sif", default=FALSE, type = "logical", help="Save network in SIF format")
+parser$add_argument("--output", default="./", type = "character", help="name of the Rdata output folder")
 args <- parser$parse_args()
 
 
 # Read matrix
 inmat <- readRDS(args$RDS)
 # transpose matrix
-ifelse(test = args$transpose == TRUE, yes = inmat <- t(inmat), no = NULL)
+ifelse(test = args$transpose == TRUE, yes = inmat <- t(inmat), no = inmat <- inmat)
 # read centroids
 ifelse(test = args$TFs == "", 
 	yes = centroids <- rownames(inmat), 
@@ -30,7 +30,7 @@ ifelse(test = args$TFs == "",
 regulon <- corto(inmat = inmat, 
               centroids = centroids, 
               nbootstraps = args$nbootstraps, 
-              p = args$pvalue, 
+              p = as.numeric(args$pvalue), 
               nthreads=args$nthreads)
 
 
